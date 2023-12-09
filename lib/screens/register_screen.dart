@@ -9,6 +9,7 @@ import 'package:jobs_workers/global/global.dart';
 import 'package:jobs_workers/screens/forgot_password_screen.dart';
 import 'package:jobs_workers/screens/login_screen.dart';
 import 'package:jobs_workers/screens/main_screen.dart';
+import 'package:jobs_workers/screens/work_info_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -52,7 +53,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         }
         await Fluttertoast.showToast(msg: "Succesfully Registered");
         Navigator.push(
-            context, MaterialPageRoute(builder: (c) => LoginScreen()));
+            context, MaterialPageRoute(builder: (c) => WorkInfoScreen()));
       }).catchError((errorMessage) {
         Fluttertoast.showToast(msg: "Error occured: \n $errorMessage");
       });
@@ -82,8 +83,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 */
   @override
   Widget build(BuildContext context) {
-    bool darkTheme = MediaQuery.of(context).platformBrightness == Brightness.dark;
-    //bool darkTheme= false;
+    //bool darkTheme = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    bool darkTheme= true;
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
