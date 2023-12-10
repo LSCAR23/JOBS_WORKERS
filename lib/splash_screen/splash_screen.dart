@@ -17,6 +17,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   startTimer(){
     Timer(Duration(seconds: 3), () async { 
+
       if(await firebaseAuth.currentUser!=null){
         firebaseAuth.currentUser!=null ? AssistandMethods.readCurrentOnlineUserInfo(): null;
         Navigator.push(context, MaterialPageRoute(builder: (c)=>MainScreen()));

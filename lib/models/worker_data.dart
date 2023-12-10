@@ -1,0 +1,20 @@
+class WorkerData {
+  String? id;
+  String? name;
+  String? phone;
+  String? email;
+  String? address;
+  String? car_color;
+  String? car_model;
+  String? car_number;
+
+  WorkerData(
+      {this.id,
+      this.name,
+      this.phone,
+      this.email,
+      this.address,
+      this.car_model,
+      this.car_number,
+      this.car_color});
+}
