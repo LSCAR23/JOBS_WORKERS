@@ -7,7 +7,7 @@ class WorkerData {
   String? car_color;
   String? car_model;
   String? car_number;
-
+  String? car_type;
   WorkerData(
       {this.id,
       this.name,
@@ -16,5 +16,6 @@ class WorkerData {
       this.address,
       this.car_model,
       this.car_number,
-      this.car_color});
+      this.car_color,
+      this.car_type});
 }
