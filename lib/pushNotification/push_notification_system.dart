@@ -9,6 +9,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:jobs_workers/global/global.dart';
 import 'package:jobs_workers/models/user_ride_request_information.dart';
+import 'package:jobs_workers/pushNotification/notification_dialog_box.dart';
 
 class PushNotificationSystem{
   FirebaseMessaging messaging = FirebaseMessaging.instance;
@@ -65,7 +66,9 @@ class PushNotificationSystem{
 
             showDialog(
               context: context, 
-              builder: (BuildContext context) => NotificationDialogBox()
+              builder: (BuildContext context) => NotificationDialogBox(
+                userRideRequestDetails: userRideRequestDetails,
+              )
               );
           }
 
@@ -79,5 +82,19 @@ class PushNotificationSystem{
         Navigator.pop(context);
       }
     });
+  }
+
+  Future generateAndGetToken() async{
+    String? registrationToken= await messaging.getToken();
+    print("FCM registration Token: ${registrationToken}");
+
+    FirebaseDatabase.instance.ref()
+    .child("drivers")
+    .child(firebaseAuth.currentUser!.uid)
+    .child("token")
+    .set(registrationToken);
+
+  messaging.subscribeToTopic("allDrivers");
+  messaging.subscribeToTopic("allUsers");
   }
 }

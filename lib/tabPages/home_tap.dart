@@ -10,6 +10,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:jobs_workers/Assistants/assistants_methods.dart';
 import 'package:jobs_workers/global/global.dart';
+import 'package:jobs_workers/pushNotification/push_notification_system.dart';
 
 class HomeTabPage extends StatefulWidget {
   const HomeTabPage({super.key});
@@ -91,6 +92,10 @@ class _HomeTabPageState extends State<HomeTabPage> {
     super.initState();
     checkIfLocationPermissionAllowed();
     readCurrentDriverInformation();
+
+    PushNotificationSystem pushNotificationSystem= PushNotificationSystem();
+    pushNotificationSystem.initializeCloudMessaging(context);
+    pushNotificationSystem.generateAndGetToken();
   }
 
   Widget build(BuildContext context) {

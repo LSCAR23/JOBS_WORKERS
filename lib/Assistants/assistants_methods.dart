@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:jobs_workers/Assistants/request_assistant.dart';
@@ -56,5 +57,10 @@ class AssistandMethods {
   directionsDetailsInfo.duration_value= responseDirectionApi["routes"][0]["legs"][0]["duration"]["value"];
 
   return directionsDetailsInfo;
+  }
+
+  static pauseLiveLocationUpdates(){
+    streamSubscriptionPosition!.pause();
+    Geofire.removeLocation(firebaseAuth.currentUser!.uid);
   }
 }
