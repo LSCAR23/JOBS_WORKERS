@@ -32,11 +32,11 @@ class PushNotificationSystem{
   }
 
   readUserRideRequestInformation(String userRideRequestId, BuildContext context){
-    FirebaseDatabase.instance.ref().child("All Ride Requests").child(userRideRequestId).child("driverId").onValue.listen((event) {
+    FirebaseDatabase.instance.ref().child("All rides Requests").child(userRideRequestId).child("workerId").onValue.listen((event) {
       if(event.snapshot.value=="waiting" || event.snapshot.value== firebaseAuth.currentUser!.uid){
-        FirebaseDatabase.instance.ref().child("All Ride Requests").child(userRideRequestId).once().then((snapData){
+        FirebaseDatabase.instance.ref().child("All rides Requests").child(userRideRequestId).once().then((snapData){
           if(snapData.snapshot.value!=null){
-            audioPlayer.open(Audio("Mas tarde lo agrego JAJAJAJAJ"));
+            audioPlayer.open(Audio("music/music_notification.wav"));
             audioPlayer.play();
 
             double originLat= double.parse((snapData.snapshot.value! as Map)["origin"]["latitude"]);
@@ -89,12 +89,12 @@ class PushNotificationSystem{
     print("FCM registration Token: ${registrationToken}");
 
     FirebaseDatabase.instance.ref()
-    .child("drivers")
+    .child("workers")
     .child(firebaseAuth.currentUser!.uid)
     .child("token")
     .set(registrationToken);
 
-  messaging.subscribeToTopic("allDrivers");
+  messaging.subscribeToTopic("allworkers");
   messaging.subscribeToTopic("allUsers");
   }
 }

@@ -24,6 +24,7 @@ class _WorkInfoScreenState extends State<WorkInfoScreen> {
   _submit(){
     if(_fromKey.currentState!.validate()){
       Map driverCarInfoMap={
+        "type":selectedCarType,
         "car_model": carModelTextEditingcontroller.text.trim(),
         "car_number": carNumberTextEditingcontroller.text.trim(),
         "car_color": carColorTextEditingcontroller.text.trim(),

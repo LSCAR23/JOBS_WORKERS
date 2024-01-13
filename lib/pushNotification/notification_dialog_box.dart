@@ -44,7 +44,7 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox> {
               ),
               SizedBox(height: 10,),
 
-              Text("New Ride Request",
+              Text("New Job Request",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 22,
@@ -64,7 +64,7 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox> {
                   children: [
                     Row(
                       children: [
-                        Image.asset("otra que ponga mas tarde",
+                        Image.asset("images/worker.png",
                         width: 30,
                         height: 30,),
 
@@ -87,7 +87,7 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox> {
 
                       Row(
                         children: [
-                          Image.asset("Otra mas JAJAJA",
+                          Image.asset("images/worker.png",
                           width: 30,
                           height: 30,),
 
@@ -174,13 +174,13 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox> {
 
   acceptRideRequest(BuildContext context){
     FirebaseDatabase.instance.ref()
-    .child("drivers")
+    .child("workers")
     .child(firebaseAuth.currentUser!.uid)
     .child("newRideStatus")
     .once()
     .then((snap){
       if(snap.snapshot.value=="idle"){
-        FirebaseDatabase.instance.ref().child("drivers").child(firebaseAuth.currentUser!.uid).child("newRideStatus").set("accepted");
+        FirebaseDatabase.instance.ref().child("workers").child(firebaseAuth.currentUser!.uid).child("newRideStatus").set("accepted");
 
         AssistandMethods.pauseLiveLocationUpdates();
 
