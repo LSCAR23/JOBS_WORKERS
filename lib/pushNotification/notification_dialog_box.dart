@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:jobs_workers/Assistants/assistants_methods.dart';
 import 'package:jobs_workers/global/global.dart';
 import 'package:jobs_workers/models/user_ride_request_information.dart';
+import 'package:jobs_workers/screens/new_trip_screen.dart';
 import 'package:provider/provider.dart';
 
 class NotificationDialogBox extends StatefulWidget {
@@ -184,7 +185,9 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox> {
 
         AssistandMethods.pauseLiveLocationUpdates();
 
-        //Navigator.push(context, MaterialPageRoute(builder: (c)=> NewTripScreen()));
+        Navigator.push(context, MaterialPageRoute(builder: (c)=> NewTripScreen(
+          userRideRequestDetails: widget.userRideRequestDetails,
+        )));
       }else{
         Fluttertoast.showToast(msg: "This Ride Request do not exists.");
       }
