@@ -4,6 +4,7 @@ class WorkerData {
   String? phone;
   String? email;
   String? address;
+  String? ratings;
   String? car_color;
   String? car_model;
   String? car_number;
@@ -14,6 +15,7 @@ class WorkerData {
       this.phone,
       this.email,
       this.address,
+      this.ratings,
       this.car_model,
       this.car_number,
       this.car_color,
