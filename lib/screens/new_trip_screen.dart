@@ -29,6 +29,8 @@ class _NewTripScreenState extends State<NewTripScreen> {
     target: LatLng(37.42796133580664, -122.085749655962),
     zoom: 14.4746,
   );
+   String? buttonTitle= "Arrived";
+   Color?buttonColor= Colors.green;
 
   Set<Marker> setOfMarkers = Set<Marker>();
   Set<Circle> setOfCircle = Set<Circle>();
@@ -198,8 +200,33 @@ class _NewTripScreenState extends State<NewTripScreen> {
     });
   }
 
-  updateDurationTimeAtRealTime(){
-    
+  updateDurationTimeAtRealTime() async{
+    if(isRequestDirectionDetails==false){
+      isRequestDirectionDetails=true;
+
+      if(onlineWorkerCurrentPosition==null){
+        return;
+      }
+      var originLatLng= LatLng(onlineWorkerCurrentPosition!.latitude, onlineWorkerCurrentPosition!.longitude);
+
+      var destinationLatLng;
+
+      if(rideRequestStatus=="accepted"){
+        destinationLatLng= widget.userRideRequestDetails!.originLatLng;
+      }else{
+        destinationLatLng= widget.userRideRequestDetails!.destinationLatLng;
+      }
+
+      var directionInformation= await AssistandMethods.obtainOriginToDestinationDirectionDetails(originLatLng, destinationLatLng);
+
+      if(directionInformation != null){
+        setState(() {
+          durationFromOriginToDestination= directionInformation.duration_text!;
+        });
+      }
+
+      isRequestDirectionDetails= false;
+    }
   }
 
   createWorkerIconMarker(){
@@ -275,7 +302,134 @@ class _NewTripScreenState extends State<NewTripScreen> {
                   workerCurrentLatLng, userPickUpLatLng!, darkTheme);
               getDriverLocationUpdatesAtRealTime();
             },
-          )
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+
+            child:Padding(
+              padding: EdgeInsets.all(10),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: darkTheme? Colors.black: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.white,
+                      blurRadius: 18,
+                      spreadRadius: 0.5,
+                      offset: Offset(0.6, 0.6),
+                    )
+                  ]
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Column(
+                    children: [
+                      Text(durationFromOriginToDestination,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: darkTheme? Colors.amber.shade400: Colors.black,
+                      ),
+                      ),
+
+                      SizedBox(height: 10,),
+                      Divider( thickness: 1,color: darkTheme? Colors.amber.shade400: Colors.grey,),
+                      SizedBox(height: 10,),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            widget.userRideRequestDetails!.userName!,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                              color: darkTheme? Colors.amber.shade400: Colors.black,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed:(){
+
+                            }, 
+                          icon: Icon(Icons.phone,
+                          color: darkTheme?Colors.amber.shade400: Colors.black,
+
+                          )
+                          )
+                        ],
+                      ),
+                      SizedBox(height: 10,),
+                      Row(
+                        children: [
+                          Image.asset("images/worker.png",
+                          width: 30,
+                          height: 30,
+                          ),
+                          SizedBox(width: 10,),
+                          Expanded(child: 
+                          Container(
+                            child: Text(
+                              widget.userRideRequestDetails!.originAddress!,
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.black,
+                              ),
+                            ),
+                          )
+                          )
+                        ],
+                      ),
+                      SizedBox(height: 10,),
+                       Row(
+                        children: [
+                          Image.asset("images/worker.png",
+                          width: 30,
+                          height: 30,
+                          ),
+                          SizedBox(width: 10,),
+                          Expanded(child: 
+                          Container(
+                            child: Text(
+                              widget.userRideRequestDetails!.destinationAddress!,
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.black,
+                              ),
+                            ),
+                          )
+                          )
+                        ],
+                      ),
+
+                      SizedBox(height: 10,),
+                      Divider(
+                        thickness: 1,
+                        color: darkTheme? Colors.amber.shade400: Colors.grey,
+                      ),
+                      SizedBox(height: 10,),
+                      ElevatedButton.icon(
+                      onPressed: (){}, 
+                      icon: Icon(Icons.directions_car, color: Colors.black, size: 25,),
+                      label: Text(
+                        buttonTitle!,
+                        style: TextStyle(
+                          color: darkTheme? Colors.black: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      
+                      )
+                    ],
+                  ),
+                ),
+              )
+              ,) 
+            )
+
+
         ],
       ),
     );
