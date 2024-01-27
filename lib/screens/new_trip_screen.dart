@@ -10,6 +10,7 @@ import 'package:jobs_workers/Assistants/assistants_methods.dart';
 import 'package:jobs_workers/global/global.dart';
 import 'package:jobs_workers/models/user_ride_request_information.dart';
 import 'package:jobs_workers/splash_screen/splash_screen.dart';
+import 'package:jobs_workers/widgets/fare_amount_collection_dialog.dart';
 import 'package:jobs_workers/widgets/progress_dialog.dart';
 
 class NewTripScreen extends StatefulWidget {
@@ -268,6 +269,49 @@ class _NewTripScreenState extends State<NewTripScreen> {
     tripHistoryRef.child(widget.userRideRequestDetails!.rideRequestId!).set(true);
   }
 
+  endTripNow() async{
+    showDialog(
+      context: context, 
+      barrierDismissible: false,
+      builder: (BuildContext context)=> ProgressDialog(message: "Please wait....",)
+      );
+
+      var currentWorkerPositionLatLng= LatLng(onlineWorkerCurrentPosition!.latitude, onlineWorkerCurrentPosition!.longitude);
+
+      var tripDirectionDetails= await AssistandMethods.obtainOriginToDestinationDirectionDetails(currentWorkerPositionLatLng, widget.userRideRequestDetails!.originLatLng!);
+
+      double totalFareAmount= AssistandMethods.calculateFareAmountFromOriginToDestination(tripDirectionDetails);
+
+      FirebaseDatabase.instance.ref().child("All Ride Request").child(widget.userRideRequestDetails!.rideRequestId!).child("fareAmount").set(totalFareAmount.toString());
+      FirebaseDatabase.instance.ref().child("All Ride Request").child(widget.userRideRequestDetails!.rideRequestId!).child("status").set("ended");
+
+      Navigator.pop(context);
+
+      showDialog(
+        context: context, 
+        builder: (BuildContext context)=>FareAmountCollectionDialog(
+          totalFareAmount:totalFareAmount ,
+        )
+        );
+
+
+      saveFareAmountToDriverEarnings(totalFareAmount);
+  }
+
+  saveFareAmountToDriverEarnings(double totalFareAmount){
+    FirebaseDatabase.instance.ref().child("workers").child(firebaseAuth.currentUser!.uid).child("earnings").once().then((snap){
+      if(snap.snapshot.value != null){
+        double oldEarnings = double.parse(snap.snapshot.value.toString());
+        double workerTotalEarnings= totalFareAmount+ oldEarnings;
+
+        FirebaseDatabase.instance.ref().child("workers").child(firebaseAuth.currentUser!.uid).child("earnings").set(workerTotalEarnings.toString());
+      }
+      else{
+        FirebaseDatabase.instance.ref().child("workers").child(firebaseAuth.currentUser!.uid).child("earnings").set(totalFareAmount.toString());
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -410,7 +454,47 @@ class _NewTripScreenState extends State<NewTripScreen> {
                       ),
                       SizedBox(height: 10,),
                       ElevatedButton.icon(
-                      onPressed: (){}, 
+                      onPressed: () async {
+                        if(rideRequestStatus=="accepted"){
+                          rideRequestStatus== "arrived";
+
+                          FirebaseDatabase.instance.ref().child("All Ride Request").child(widget.userRideRequestDetails!.rideRequestId!).child("status").set(rideRequestStatus);
+
+                          setState(() {
+                            buttonTitle= "Let's Go";
+                            buttonColor= Colors.lightGreen;
+                          });
+
+                          showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder:(BuildContext context)=> ProgressDialog(message: "Loading.....",) 
+                            );
+
+                            await drawPolyLineFromOriginToDestination(
+                             widget.userRideRequestDetails!.originLatLng! , 
+                             widget.userRideRequestDetails!.destinationLatLng!, 
+                             darkTheme
+                            );
+
+                            Navigator.pop(context);
+                        }
+
+                        else if(rideRequestStatus== "arrived"){
+                          rideRequestStatus= "ontrip";
+                           FirebaseDatabase.instance.ref().child("All Ride Request").child(widget.userRideRequestDetails!.rideRequestId!).child("status").set(rideRequestStatus);
+
+                          setState(() {
+                            buttonTitle= "End Trip";
+                            buttonColor= Colors.red;
+                          });
+
+                        }
+
+                        else if(rideRequestStatus=="ontrip"){
+                          endTripNow();
+                        }
+                      }, 
                       icon: Icon(Icons.directions_car, color: Colors.black, size: 25,),
                       label: Text(
                         buttonTitle!,
