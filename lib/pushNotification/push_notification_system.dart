@@ -32,9 +32,9 @@ class PushNotificationSystem{
   }
 
   readUserRideRequestInformation(String userRideRequestId, BuildContext context){
-    FirebaseDatabase.instance.ref().child("All rides Requests").child(userRideRequestId).child("workerId").onValue.listen((event) {
+    FirebaseDatabase.instance.ref().child("All Ride Request").child(userRideRequestId).child("workerId").onValue.listen((event) {
       if(event.snapshot.value=="waiting" || event.snapshot.value== firebaseAuth.currentUser!.uid){
-        FirebaseDatabase.instance.ref().child("All rides Requests").child(userRideRequestId).once().then((snapData){
+        FirebaseDatabase.instance.ref().child("All Ride Request").child(userRideRequestId).once().then((snapData){
           if(snapData.snapshot.value!=null){
             audioPlayer.open(Audio("music/music_notification.wav"));
             audioPlayer.play();

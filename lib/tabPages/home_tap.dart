@@ -60,7 +60,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
     print("This is our address = " + humanReadableAddress);
   }
 
-  readCurrentDriverInformation() async {
+  readCurrentWorkerInformation() async {
     currentUser = firebaseAuth.currentUser;
     FirebaseDatabase.instance
         .ref()
@@ -74,6 +74,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
         onlineWorkerData.phone = (snap.snapshot.value as Map)["phone"];
         onlineWorkerData.email = (snap.snapshot.value as Map)["email"];
         onlineWorkerData.address = (snap.snapshot.value as Map)["address"];
+        onlineWorkerData.ratings= (snap.snapshot.value as Map)["ratings"];
         onlineWorkerData.car_model =
             (snap.snapshot.value as Map)["car_details"]["car_model"];
         onlineWorkerData.car_number =
@@ -91,7 +92,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
   void initState() {
     super.initState();
     checkIfLocationPermissionAllowed();
-    readCurrentDriverInformation();
+    readCurrentWorkerInformation();
 
     PushNotificationSystem pushNotificationSystem= PushNotificationSystem();
     pushNotificationSystem.initializeCloudMessaging(context);
