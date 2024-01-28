@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:jobs_workers/global/global.dart';
 import 'package:jobs_workers/splash_screen/splash_screen.dart';
+import 'package:jobs_workers/tabPages/earning_tap.dart';
 import 'package:jobs_workers/tabPages/home_tap.dart';
+import 'package:jobs_workers/tabPages/profile_tab.dart';
+import 'package:jobs_workers/tabPages/ratings_tab.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -35,9 +38,9 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
         controller: tabController,
         children: [
           HomeTabPage(),
-          /*EarningsTabPage(),
+          EarningsTabPage(),
           RatingsTabPage(),
-          ProfileTabPage(),*/
+          ProfileTabPage(),
 
         ],
         ),
