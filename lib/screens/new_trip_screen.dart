@@ -456,7 +456,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
                       ElevatedButton.icon(
                       onPressed: () async {
                         if(rideRequestStatus=="accepted"){
-                          rideRequestStatus== "arrived";
+                          rideRequestStatus="arrived";
 
                           FirebaseDatabase.instance.ref().child("All Ride Request").child(widget.userRideRequestDetails!.rideRequestId!).child("status").set(rideRequestStatus);
 
