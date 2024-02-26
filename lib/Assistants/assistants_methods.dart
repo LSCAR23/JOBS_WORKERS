@@ -1,5 +1,7 @@
 import 'dart:developer';
+import 'dart:ffi';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:geolocator/geolocator.dart';
@@ -10,6 +12,7 @@ import 'package:jobs_workers/global/map_key.dart';
 import 'package:jobs_workers/infoHandler/app_info.dart';
 import 'package:jobs_workers/models/direction_details_info.dart';
 import 'package:jobs_workers/models/directions.dart';
+import 'package:jobs_workers/models/trips_history_model.dart';
 import 'package:jobs_workers/models/user_model.dart';
 import 'package:provider/provider.dart';
 
@@ -61,6 +64,7 @@ class AssistandMethods {
 
   static pauseLiveLocationUpdates(){
     streamSubscriptionPosition!.pause();
+    print("entroooooo aqui");
     Geofire.removeLocation(firebaseAuth.currentUser!.uid);
   }
 
@@ -87,5 +91,61 @@ class AssistandMethods {
       return localCurrencyTotalFare.truncate().toDouble();
     }
     return localCurrencyTotalFare.truncate().toDouble();
+  }
+
+  static void readTripsKeysForOnlineWorker(context){
+    FirebaseDatabase.instance.ref().child("All Ride Request").orderByChild("workerId").equalTo(firebaseAuth.currentUser!.uid).once().then((snap){
+      if(snap.snapshot.value != null){
+        Map keysTripsId= snap.snapshot.value as Map;
+
+
+        int overAllTripsCounter = keysTripsId.length;
+        Provider.of<AppInfo>(context,listen: false).updateOverAllTripsCounter(overAllTripsCounter);
+
+        List<String> tripsKeysList=[];
+
+        keysTripsId.forEach((key, value) {
+          tripsKeysList.add(key);
+        });
+
+        Provider.of<AppInfo>(context,listen: false).updateOverAllTripsKeys(tripsKeysList);
+
+        readTripsHistoryInformation(context);
+      }
+    });
+  }
+
+  static void readTripsHistoryInformation(context){
+    var tripAllKeys= Provider.of<AppInfo>(context, listen: false).historyTripsKeyList;
+
+    for(String eachKey in tripAllKeys){
+    FirebaseDatabase.instance.ref().child("All Ride Request").child(eachKey).once().then((snap){
+      var eachTripHistory= TripHistoryModel.fromSnapshot(snap.snapshot);
+
+      if((snap.snapshot.value as Map)["status"]== "ended"){
+        Provider.of<AppInfo>(context,listen: false).updateOverAllTripsHistoryInformation(eachTripHistory);
+      }
+    });
+    }
+  }
+
+  static void readWorkerEarnings(context){
+    FirebaseDatabase.instance.ref().child("workers").child(firebaseAuth.currentUser!.uid).child("earnings").once().then((snap){
+      if(snap.snapshot.value!= null){
+        String workerEarnings = snap.snapshot.value.toString();
+        Provider.of(context,listen: false).updateWorkerTotalEarnings(workerEarnings);
+      }
+    });
+
+    readTripsKeysForOnlineWorker(context);
+  }
+
+  static void readWorkerRatings(context){
+    FirebaseDatabase.instance.ref().child("workers").child(firebaseAuth.currentUser!.uid).child("ratings").once().then((snap){
+      if(snap.snapshot.value!= null){
+        String workerRatings= snap.snapshot.value.toString();
+        Provider.of<AppInfo>(context,listen: false).updateWorkerAverageRatings(workerRatings);
+      }
+    });
   }
 }

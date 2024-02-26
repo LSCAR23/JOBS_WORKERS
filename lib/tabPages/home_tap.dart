@@ -58,6 +58,8 @@ class _HomeTabPageState extends State<HomeTabPage> {
         await AssistandMethods.searchAddressForGeographicCoordinates(
             workerCurrentPosition!, context);
     print("This is our address = " + humanReadableAddress);
+
+    AssistandMethods.readWorkerRatings(context);
   }
 
   readCurrentWorkerInformation() async {
@@ -86,6 +88,8 @@ class _HomeTabPageState extends State<HomeTabPage> {
         workerVehicleType = (snap.snapshot.value as Map)["car_details"]["type"];
       }
     });
+
+    AssistandMethods.readWorkerEarnings(context);
   }
 
   @override

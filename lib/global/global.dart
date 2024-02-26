@@ -18,3 +18,4 @@ UserModel? userModelCurrentInfo;
 Position? workerCurrentPosition;
 WorkerData onlineWorkerData= WorkerData();
 String? workerVehicleType="";
+String titleStarsRating="";

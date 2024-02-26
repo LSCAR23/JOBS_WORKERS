@@ -55,6 +55,7 @@ dependencies:
   url_launcher: ^6.2.1
   provider: ^6.0.5
   assets_audio_player: ^3.0.8
+  intl:
 
 dev_dependencies:
   flutter_test:

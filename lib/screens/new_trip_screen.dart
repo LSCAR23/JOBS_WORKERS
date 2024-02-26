@@ -57,7 +57,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
         builder: (BuildContext context) => ProgressDialog(
               message: "Please Wait.....",
             ));
-
+    print("llego aqui");
     var directionDetailsInfo =
         await AssistandMethods.obtainOriginToDestinationDirectionDetails(
             originLatLng, destinationLatLng);
